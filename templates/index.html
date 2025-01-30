@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container">
+        <h1>File Upload</h1>
+
+        <p class="info">
+            Accepted file types: JPG, JPEG, PNG, GIF, BMP, WEBP, SVG, MP4, AVI, MOV, MKV, WEBM.<br>
+            Maximum upload size: 500MB.<br><br>
+            All files are encrypted on the server, ensuring that only you can access them.
+        </p>
+
+        <form action="/" method="post" enctype="multipart/form-data">
+            <input type="file" name="fileToUpload[]" id="fileToUpload" multiple>
+            <input type="submit" value="Upload Files" name="submit">
+        </form>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        {% if success %}
+            <div class="success">{{ success }}</div>
+            <p>{{links}}</p>
+        {% endif %}
+    </div>
+
+    <footer>
+        <p>XMR Donation Address: xxx</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+            margin: 0;
+            padding: 0;
+            padding-bottom: 40px;
+        }
+
+        h1 {
+            margin-left: 20px;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px;
+            justify-content: center;
+        }
+
+        .gallery a {
+            flex: 1 1 calc(33.333% - 10px);
+            max-width: 100%;
+        }
+
+        .gallery img,
+        .gallery video {
+            width: 100%;
+            height: auto;
+            max-height: 60vh;
+            object-fit: cover;
+            border: 2px solid #444;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        .gallery a:first-child {
+            flex: 1 1 calc(50% - 10px);
+        }
+
+        .gallery img:hover,
+        .gallery video:hover {
+            border-color: #007BFF;
+        }
+
+        .error {
+            color: #FF0000;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .back-link {
+            display: block;
+            color: #cdd6f4;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+
+        .back-link:hover {
+            color: #007BFF;
+        }
+
+        .sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            color: #cdd6f4;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            border-top: 1px solid #444;
+        }
+    </style>
+</head>
+<body>
+    {% if success %}
+        <p class="success">{{ success }}</p>
+    {% endif %}
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if not links %}
+        <p class="error">No valid files found.</p>
+        <a href="{{ url_for('upload_file') }}" class="back-link">Back to Upload</a>
+    {% else %}
+        <h1>Album</h1>
+
+        <a href="{{ url_for('upload_file') }}" class="back-link">Back to Upload</a>
+
+        <div class="gallery">
+            {% for file in links %}
+                {% set file_extension = file.split('?')[0].rsplit('.', 1)[-1] %}
+                {% if file_extension in ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'] %}
+                    <a href="{{ file }}" target="_blank">
+                        <img src="{{ file }}" alt="Image">
+                    </a>
+                {% elif file_extension in ['mp4', 'avi', 'mov', 'mkv', 'webm'] %}
+                    <a href="{{ file }}" target="_blank">
+                        <video controls>
+                            <source src="{{ file }}" type="video/{{ file_extension }}">
+                        </video>
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <div class="sticky-footer">
+            Shareable Link: <br>
+            <a href="http://{{ request.host }}/view?token={{ token }}">
+                http://{{ request.host }}/view?token={{ token }}
+            </a>
+        </div>
+        
+    {% endif %}
+</body>
+</html>
